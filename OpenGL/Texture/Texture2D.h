@@ -31,6 +31,10 @@ public:
     void init(const char* pixelsData, int width, int height);
     void init(BMPFile file);
     void bind();
+
+    const vector<GLfloat> &getCoordinates() const;
+
+    void setCoordinates(const vector<GLfloat> &coordinates);
 };
 
 

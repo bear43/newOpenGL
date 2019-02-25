@@ -11,7 +11,11 @@ class VAO : Buffer
 {
 public:
     VAO(const string &name);
+
+    virtual ~VAO();
+
     void bindBuffer() override;
+    void deleteBuffer();
     static void unbindBuffer();
 };
 

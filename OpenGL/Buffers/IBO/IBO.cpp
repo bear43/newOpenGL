@@ -6,7 +6,6 @@
 
 IBO::IBO(const string &name) : Buffer(name)
 {
-
 }
 
 void IBO::unbindBuffer()
@@ -22,6 +21,7 @@ void IBO::bindBuffer()
 void IBO::deleteBuffer()
 {
     if(buffer_created) __glewDeleteBuffers(1, &buffer_id);
+    buffer_created = false;
 }
 
 void IBO::fillBuffer(const void *data, GLsizeiptr size)
@@ -35,4 +35,16 @@ void IBO::fillBuffer(const void *data, GLsizeiptr size)
 void IBO::fillBuffer(const vector<GLuint> &indices)
 {
     fillBuffer(indices.data(), indices.size()*sizeof(GLuint));
+}
+
+void IBO::configure(VAO &vao)
+{
+    vao.bindBuffer();
+    bindBuffer();
+    VAO::unbindBuffer();
+}
+
+IBO::~IBO()
+{
+    deleteBuffer();
 }

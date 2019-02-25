@@ -27,7 +27,7 @@ Texture2D::Texture2D(const vector<GLfloat> &coordinates, unsigned int texture_wr
 void Texture2D::init(const char *pixelsData, int width, int height)
 {
     glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelsData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, pixelsData);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -41,6 +41,16 @@ void Texture2D::init(BMPFile file)
 void Texture2D::bind()
 {
     glBindTexture(GL_TEXTURE_2D, texture_id);
+}
+
+const vector<GLfloat> &Texture2D::getCoordinates() const
+{
+    return coordinates;
+}
+
+void Texture2D::setCoordinates(const vector<GLfloat> &coordinates)
+{
+    Texture2D::coordinates = coordinates;
 }
 
 
