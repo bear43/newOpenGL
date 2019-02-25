@@ -2,19 +2,19 @@
 // Created by bear on 24.02.19.
 //
 
-#include "FileInput.h"
+#include "FileStringInput.h"
 
-FileInput::~FileInput()
+FileStringInput::~FileStringInput()
 {
     dispose();
 }
 
-FileInput::FileInput(const string &name) : File(name)
+FileStringInput::FileStringInput(const string &name) : File(name)
 {
     this->stream = new ifstream(name);
 }
 
-void FileInput::dispose()
+void FileStringInput::dispose()
 {
     if(stream != nullptr)
     {
@@ -24,14 +24,14 @@ void FileInput::dispose()
     }
 }
 
-string FileInput::readAll()
+string FileStringInput::readAll()
 {
     stringstream str;
     str << stream->rdbuf();
     return str.str();
 }
 
-string FileInput::readLine()
+string FileStringInput::readLine()
 {
     string str;
     getline(*stream, str);

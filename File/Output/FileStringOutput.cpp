@@ -2,19 +2,19 @@
 // Created by bear on 24.02.19.
 //
 
-#include "FileOutput.h"
+#include "FileStringOutput.h"
 
-FileOutput::FileOutput(const string &name) : File(name)
+FileStringOutput::FileStringOutput(const string &name) : File(name)
 {
     this->stream = new ofstream(name);
 }
 
-FileOutput::~FileOutput()
+FileStringOutput::~FileStringOutput()
 {
     dispose();
 }
 
-void FileOutput::dispose()
+void FileStringOutput::dispose()
 {
     if(stream != nullptr)
     {
@@ -25,13 +25,13 @@ void FileOutput::dispose()
     }
 }
 
-void FileOutput::writeAll(const string &data)
+void FileStringOutput::writeAll(const string &data)
 {
     *stream << data;
     stream->flush();
 }
 
-void FileOutput::writeLine(const string &data)
+void FileStringOutput::writeLine(const string &data)
 {
     writeAll(data);
     *stream << terminator;

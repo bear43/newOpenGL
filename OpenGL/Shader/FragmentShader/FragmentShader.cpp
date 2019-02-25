@@ -4,7 +4,7 @@
 
 #include "FragmentShader.h"
 
-FragmentShader::FragmentShader(const string &name) : FileInput(name)
+FragmentShader::FragmentShader(const string &name) : FileStringInput(name)
 {
     shader = glCreateShader(GL_FRAGMENT_SHADER);
     shaderCode = readAll();

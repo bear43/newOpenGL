@@ -6,11 +6,11 @@
 #define UNTITLED2_VERTEXSHADER_H
 
 
-#include "../../../File/Input/FileInput.h"
+#include "../../../File/Input/FileStringInput.h"
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-class VertexShader : FileInput
+class VertexShader : FileStringInput
 {
 private:
     GLuint shader;

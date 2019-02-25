@@ -8,3 +8,16 @@ File::File(const string &name)
 {
     this->name = name;
 }
+
+long File::getFileSize()
+{
+    ifstream stream(name, ios::binary | ios::ate);
+    if(!stream.is_open())
+    {
+        stream.close();
+        return -1;
+    }
+    long size = stream.tellg();
+    stream.close();
+    return size;
+}

@@ -6,11 +6,11 @@
 #define UNTITLED2_FRAGMENTSHADER_H
 
 
-#include "../../../File/Input/FileInput.h"
+#include "../../../File/Input/FileStringInput.h"
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-class FragmentShader : FileInput
+class FragmentShader : FileStringInput
 {
 private:
     GLuint shader;

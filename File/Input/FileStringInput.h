@@ -8,14 +8,14 @@
 #include "../File.h"
 #include <sstream>
 
-class FileInput : File
+class FileStringInput : File
 {
 private:
     ifstream *stream = nullptr;
     void dispose();
 public:
-    explicit FileInput(const string &name);
-    virtual ~FileInput();
+    explicit FileStringInput(const string &name);
+    virtual ~FileStringInput();
 
     string readAll();
     string readLine();

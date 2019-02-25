@@ -9,16 +9,16 @@
 #include "../File.h"
 
 
-class FileOutput : File
+class FileStringOutput : File
 {
 private:
     static constexpr char terminator = '\n';
     ofstream *stream = nullptr;
     void dispose();
 public:
-    explicit FileOutput(const string &name);
+    explicit FileStringOutput(const string &name);
 
-    virtual ~FileOutput();
+    virtual ~FileStringOutput();
     void writeAll(const string &data);
     void writeLine(const string &data);
 };

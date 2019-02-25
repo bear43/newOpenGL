@@ -17,6 +17,7 @@ protected:
     string name;
 public:
     explicit File(const string &name);
+    long getFileSize();
 };
 
 

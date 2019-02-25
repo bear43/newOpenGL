@@ -4,7 +4,7 @@
 
 #include "VertexShader.h"
 
-VertexShader::VertexShader(const string &name) : FileInput(name)
+VertexShader::VertexShader(const string &name) : FileStringInput(name)
 {
     shader = glCreateShader(GL_VERTEX_SHADER);
     shaderCode = readAll();
