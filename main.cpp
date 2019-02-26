@@ -17,7 +17,7 @@ GLFWwindow* window;
 bool init()
 {
     glfwInit();
-    window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+    window = glfwCreateWindow(640, 480, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -38,45 +38,16 @@ int main()
     std::cout << "Hello, World!" << std::endl;
     if(!init()) return 0;
     int width, height;
-    glClearColor(0.3f, 0.5f, 0.9f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     Program program("vertexShader_texture", "fragmentShader_texture");
     program.attachShaders();
     program.link();
-    /*VAO vao("vao");
-    VBOTexture vbo("vbo");
-    IBO ibo("ibo");
-    Texture2D texture2D({
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f
-        }, GL_REPEAT, GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    BMPFile texFile("s.bmp");
-    texFile.load();
-    texture2D.init(texFile);
-    vbo.fillBuffer({
-            0.5f,  0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f,
-        },{
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f
-        }, texture2D);
-    vbo.configure(vao);
-    ibo.fillBuffer({
-        0, 1, 3,
-        1, 2, 3
-    });
-    ibo.configure(vao);*/
-
+    glEnableClientState(GL_VERTEX_ARRAY);
     Object2D obj("test", "s.bmp", {
-            0.5f,  0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+            0.8f,  0.5f, 0.0f,
+            0.8f, -0.5f, 0.0f,
+            0.6f, -0.5f, 0.0f,
+            0.6f,  0.5f, 0.0f
     }, {
             1.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f,
@@ -87,6 +58,23 @@ int main()
             1, 2, 3
     });
 
+    Object2D obj2("teswt", "s.bmp", {
+            0.5f,  0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f
+    }, {
+                         1.0f, 0.0f, 0.0f,
+                         0.0f, 1.0f, 0.0f,
+                         0.0f, 0.0f, 1.0f,
+                         1.0f, 1.0f, 0.0f
+                 },{
+                         0, 1, 3,
+                         1, 2, 3
+                 });
+
+    obj.configure();
+    obj2.configure();
     while(!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -94,12 +82,8 @@ int main()
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         program.use();
-        /*texture2D.bind();
-        vao.bindBuffer();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-        VAO::unbindBuffer();*/
         obj.draw();
+        obj2.draw();
         glfwSwapBuffers(window);
     }
     glfwTerminate();

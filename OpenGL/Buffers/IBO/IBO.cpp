@@ -42,9 +42,11 @@ void IBO::configure(VAO &vao)
     vao.bindBuffer();
     bindBuffer();
     VAO::unbindBuffer();
+    unbindBuffer();
 }
 
 IBO::~IBO()
 {
     deleteBuffer();
 }
+

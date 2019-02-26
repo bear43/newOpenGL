@@ -26,6 +26,7 @@ protected:
         __glewGenBuffers(1, &buffer_id);
         buffer_created = true;
     }
+    Buffer() = default;
 public:
     virtual void bindBuffer() = 0;
     static void unbindBuffer()

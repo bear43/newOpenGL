@@ -7,10 +7,11 @@
 
 #include "../Buffer.h"
 
-class VAO : Buffer
+class VAO : public Buffer
 {
 public:
     VAO(const string &name);
+
 
     virtual ~VAO();
 

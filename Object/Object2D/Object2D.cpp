@@ -113,7 +113,7 @@ void Object2D::draw()
 {
     if(!configured) configure();
     vao->bindBuffer();
-    if(useTexture)
+    if(!indices.empty())
     {
         glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, nullptr);
     }
@@ -121,6 +121,7 @@ void Object2D::draw()
     {
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei)points.size()/3);
     }
+    glFlush();
     VAO::unbindBuffer();
 }
 

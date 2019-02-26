@@ -9,7 +9,7 @@
 #include "VBODefault.h"
 #include "../../Texture/Texture2D.h"
 
-class VBOTexture : VBODefault
+class VBOTexture : public VBODefault
 {
 public:
     VBOTexture(const string &name);

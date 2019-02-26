@@ -4,8 +4,11 @@
 
 #include "VAO.h"
 
-VAO::VAO(const string &name) : Buffer(name)
+VAO::VAO(const string &name)
 {
+    this->name = name;
+    glGenVertexArrays(1, &buffer_id);
+    this->buffer_created = true;
 }
 
 void VAO::bindBuffer()
@@ -27,7 +30,7 @@ void VAO::deleteBuffer()
 {
     if(buffer_created)
     {
-        __glewDeleteBuffers(1, &buffer_id);
+        glDeleteVertexArrays(1, &buffer_id);
         buffer_created = false;
     }
 }
