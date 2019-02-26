@@ -90,6 +90,7 @@ int main()
     program.compile();
     ModelViewProjection mat(640, 480);
     glEnableClientState(GL_VERTEX_ARRAY);
+    glEnable(GL_DEPTH_TEST);
     Object2D obj("test", "s.bmp", {
             0.5f,  0.5f, -5.0f,
             0.5f, -0.5f, -5.0f,
@@ -104,6 +105,35 @@ int main()
                          0, 1, 3,
                          1, 2, 3
                  });
+
+    Object2D obj2("test2", "s.bmp", {
+            0.5f,  0.5f, 5.0f,
+            0.5f, -0.5f, 5.0f,
+            -0.5f, -0.5f, 5.0f,
+            -0.5f,  0.5f, 5.0f
+    }, {
+                         1.0f, 0.0f, 0.0f,
+                         0.0f, 1.0f, 0.0f,
+                         0.0f, 0.0f, 1.0f,
+                         1.0f, 1.0f, 1.0f
+                 },{
+                         0, 1, 3,
+                         1, 2, 3
+                 });
+    Object2D floor("floor", "floor.bmp", {
+            10.0f,  0.0f, 10.0f,
+            10.0f, 0.0f, -10.0f,
+            -10.0f, 0.0f, -10.0f,
+            -10.0f,  0.0f, 10.0f
+    }, {
+                          1.0f, 1.0f, 1.0f,
+                          1.0f, 1.0f, 1.0f,
+                          1.0f, 1.0f, 1.0f,
+                          1.0f, 1.0f, 1.0f
+                  },{
+                          0, 1, 3,
+                          1, 2, 3
+                  });
     double time;
     while(!glfwWindowShouldClose(window))
     {
@@ -112,7 +142,7 @@ int main()
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         mat.resetPerspectiveMatrix(width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         program.use();
         checkKeys();
         camera->updateCamera();
@@ -122,6 +152,11 @@ int main()
         obj.rotate(0.01f, {0.1f, 0.0f, 0.0f});
         obj.translate({0.0f, 0.0f, -5.0f});
         obj.draw();
+        obj2.translate({0.0f, 0.0f, -5.0f});
+        obj2.rotate(0.01f, {0.1f, 0.0f, 0.0f});
+        obj2.translate({0.0f, 0.0f, 5.0f});
+        obj2.draw();
+        floor.draw();
         glfwSwapBuffers(window);
         deltaTime = time-deltaTime;
     }

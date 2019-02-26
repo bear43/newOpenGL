@@ -10,7 +10,7 @@ ModelViewProjection::ModelViewProjection(const mat4 &model, const mat4 &view, co
 
 ModelViewProjection::ModelViewProjection(int width, int height) : ModelViewProjection(mat4(1.0), mat4(1.0), mat4(1.0))
 {
-    resetPerspectiveMatrix();
+    resetPerspectiveMatrix(width, height);
 }
 
 int ModelViewProjection::getWidth() const

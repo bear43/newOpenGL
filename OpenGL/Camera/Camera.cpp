@@ -94,12 +94,15 @@ void Camera::updateDirectionByDeltaXY(GLfloat deltaX, GLfloat deltaY)
 {
     xAngle += deltaX;
     yAngle += deltaY;
-    if(xAngle > 89.0f)
-        xAngle =  89.0f;
-    if(yAngle < -89.0f)
-        yAngle = -89.0f;
+    if(xAngle > 360.0f || xAngle < -360.0f)
+        xAngle =  0.0f;
+    if(yAngle > 90.0f)
+        yAngle = 90.0f;
+    if(yAngle < -90.0f)
+        yAngle = -90.0f;
     direction[0] = -cos(radians(xAngle))*cos(radians(yAngle));
     direction[1] = sin(radians(yAngle));
     direction[2] = sin(radians(xAngle))*cos(radians(yAngle));
+    direction = normalize(direction);
     needUpdate = true;
 }
