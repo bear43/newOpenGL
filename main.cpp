@@ -11,6 +11,7 @@
 #include "OpenGL/Texture/Texture2D.h"
 #include "OpenGL/Buffers/IBO/IBO.h"
 #include "Object/Object2D/Object2D.h"
+#include "OpenGL/Matrix/ModelViewProjection.h"
 
 GLFWwindow* window;
 
@@ -39,26 +40,11 @@ int main()
     if(!init()) return 0;
     int width, height;
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    Program program("vertexShader_texture", "fragmentShader_texture");
-    program.attachShaders();
-    program.link();
+    Program program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
+    program.compile();
+    ModelViewProjection mat(640, 480);
     glEnableClientState(GL_VERTEX_ARRAY);
     Object2D obj("test", "s.bmp", {
-            0.8f,  0.5f, 0.0f,
-            0.8f, -0.5f, 0.0f,
-            0.6f, -0.5f, 0.0f,
-            0.6f,  0.5f, 0.0f
-    }, {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f
-    },{
-            0, 1, 3,
-            1, 2, 3
-    });
-
-    Object2D obj2("teswt", "s.bmp", {
             0.5f,  0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
@@ -67,23 +53,22 @@ int main()
                          1.0f, 0.0f, 0.0f,
                          0.0f, 1.0f, 0.0f,
                          0.0f, 0.0f, 1.0f,
-                         1.0f, 1.0f, 0.0f
+                         1.0f, 1.0f, 1.0f
                  },{
                          0, 1, 3,
                          1, 2, 3
                  });
 
-    obj.configure();
-    obj2.configure();
     while(!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
+        mat.resetPerspectiveMatrix(width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         program.use();
+        mat.setMatrices(program);
         obj.draw();
-        obj2.draw();
         glfwSwapBuffers(window);
     }
     glfwTerminate();

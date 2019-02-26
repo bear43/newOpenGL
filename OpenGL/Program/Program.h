@@ -28,6 +28,9 @@ public:
     void freeVertexShader();
     void freeFragmentShader();
     void use();
+    void compile();
+
+    GLuint getProgramID() const;
 };
 
 

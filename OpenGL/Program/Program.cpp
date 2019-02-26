@@ -57,3 +57,14 @@ void Program::use()
 {
     glUseProgram(program);
 }
+
+GLuint Program::getProgramID() const
+{
+    return program;
+}
+
+void Program::compile()
+{
+    attachShaders();
+    link();
+}
