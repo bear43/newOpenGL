@@ -13,8 +13,11 @@
 #include "../../OpenGL/Buffers/VAO/VAO.h"
 #include "../../OpenGL/Buffers/IBO/IBO.h"
 #include "../../OpenGL/Buffers/VBO/VBOTexture.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace std;
+using namespace glm;
 
 class Object2D
 {
@@ -35,8 +38,10 @@ private:
     VAO *vao = nullptr;
     VBOTexture *dataBuffer = nullptr;
     IBO *indexBuffer = nullptr;
+    mat4 modelMatrix = mat4(1.0);//Identity matrix for transformation model
     bool configured = false;
     bool useTexture = false;
+    bool needUpdateBuffer = true;
     void disposeParentsInfoAboutIt();
     void disposeChildren();
 public:
@@ -101,6 +106,18 @@ public:
     IBO *getIndexBuffer() const;
 
     void setIndexBuffer(IBO *indexBuffer);
+
+    const mat4 &getModelMatrix() const;
+
+    void setModelMatrix(const mat4 &modelMatrix);
+
+    void rotate(GLfloat angle, const vec3 &axis);
+
+    void translate(const vec3 &direction);
+
+    void updatePoints();
+
+
 };
 
 

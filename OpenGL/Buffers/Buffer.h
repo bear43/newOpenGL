@@ -33,6 +33,10 @@ public:
     {
         __glewBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+    GLuint getBufferID()
+    {
+        return buffer_id;
+    }
 };
 
 #endif //UNTITLED2_BUFFER_H

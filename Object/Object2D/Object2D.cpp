@@ -121,7 +121,6 @@ void Object2D::draw()
     {
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei)points.size()/3);
     }
-    glFlush();
     VAO::unbindBuffer();
 }
 
@@ -236,4 +235,36 @@ Object2D::Object2D(const string &name, BMPFile &&bmp, const vector<GLfloat> &poi
 Object2D::Object2D(const string &name, const string &bmpfile, const vector<GLfloat> &points, const vector<GLfloat> &colors,
                    const vector<GLuint> &indices) : Object2D(name, BMPFile(bmpfile), points, colors, indices)
 {}
+
+const mat4 &Object2D::getModelMatrix() const
+{
+    return modelMatrix;
+}
+
+void Object2D::setModelMatrix(const mat4 &modelMatrix)
+{
+    Object2D::modelMatrix = modelMatrix;
+}
+
+void Object2D::rotate(GLfloat angle, const vec3 &axis)
+{
+    modelMatrix = glm::rotate(modelMatrix, angle, axis);
+    updatePoints();
+}
+
+void Object2D::translate(const vec3 &direction)
+{
+    modelMatrix = ::translate(modelMatrix, direction);
+    updatePoints();
+}
+
+void Object2D::updatePoints()
+{
+    vector<vec3> p = Vec3toVector::reverseDoubleVector(points), c = Vec3toVector::reverseDoubleVector(colors);
+    for(vec3 &point : p)
+        point = modelMatrix * vec4(point, 1.0);
+    points = Vec3toVector::transform(p);
+    dataBuffer->updateBuffer(p, c, *texture2D);
+    modelMatrix = mat4(1.0);
+}
 

@@ -45,10 +45,10 @@ int main()
     ModelViewProjection mat(640, 480);
     glEnableClientState(GL_VERTEX_ARRAY);
     Object2D obj("test", "s.bmp", {
-            0.5f,  0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+            0.5f,  0.5f, -5.0f,
+            0.5f, -0.5f, -5.0f,
+            -0.5f, -0.5f, -5.0f,
+            -0.5f,  0.5f, -5.0f
     }, {
                          1.0f, 0.0f, 0.0f,
                          0.0f, 1.0f, 0.0f,
@@ -58,7 +58,7 @@ int main()
                          0, 1, 3,
                          1, 2, 3
                  });
-
+    double time;
     while(!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -68,6 +68,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         program.use();
         mat.setMatrices(program);
+        obj.translate({0.0f, 0.0f, 5.0f});
+        obj.rotate(0.01f, {0.1f, 0.0f, 0.0f});
+        obj.translate({0.0f, 0.0f, -5.0f});
         obj.draw();
         glfwSwapBuffers(window);
     }

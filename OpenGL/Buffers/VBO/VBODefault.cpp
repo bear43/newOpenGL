@@ -16,7 +16,7 @@ void VBODefault::fillBuffer(const void *data, GLsizeiptr size)
 {
     if(!buffer_created) return;
     __glewBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    __glewBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+    __glewBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
     __glewBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
