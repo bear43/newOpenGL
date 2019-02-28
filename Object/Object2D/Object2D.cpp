@@ -113,6 +113,7 @@ void Object2D::draw()
 {
     if(!configured) configure();
     vao->bindBuffer();
+    texture2D->bind();
     if(!indices.empty())
     {
         glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, nullptr);
@@ -122,6 +123,7 @@ void Object2D::draw()
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei)points.size()/3);
     }
     VAO::unbindBuffer();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 const vector<GLfloat> &Object2D::getPoints() const

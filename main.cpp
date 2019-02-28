@@ -137,6 +137,7 @@ int main()
     double time;
     while(!glfwWindowShouldClose(window))
     {
+        static int i = 1;
         glfwPollEvents();
         time = glfwGetTime();
         glfwGetFramebufferSize(window, &width, &height);
