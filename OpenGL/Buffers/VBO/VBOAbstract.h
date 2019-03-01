@@ -14,9 +14,6 @@ class VBOAbstract : public Buffer
 {
 public:
     VBOAbstract(const string &name);
-
-    virtual void fillBuffer(const void* data, GLsizeiptr size) = 0;
-    virtual void fillBuffer(const vector<GLfloat> &vertices) = 0;
     virtual void configure(VAO &vao) = 0;
     virtual void deleteBuffer() = 0;
 };

@@ -10,6 +10,9 @@
 #include <string>
 #include "../Shader/VertexShader/VertexShader.h"
 #include "../Shader/FragmentShader/FragmentShader.h"
+#include "../Matrix/ModelViewProjection.h"
+
+class ModelViewProjection;
 
 using namespace std;
 
@@ -29,6 +32,7 @@ public:
     void freeFragmentShader();
     void use();
     void compile();
+    void updateMatrices(const ModelViewProjection &mvp);
 
     GLuint getProgramID() const;
 };

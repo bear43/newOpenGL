@@ -5,14 +5,16 @@
 #include <GLFW/glfw3.h>
 #include "OpenGL/Program/Program.h"
 #include "OpenGL/Buffers/VAO/VAO.h"
-#include "OpenGL/Buffers/VBO/VBODefault.h"
-#include "OpenGL/Buffers/VBO/VBOColors.h"
-#include "OpenGL/Buffers/VBO/VBOTexture.h"
-#include "OpenGL/Texture/Texture2D.h"
 #include "OpenGL/Buffers/IBO/IBO.h"
-#include "Object/Object2D/Object2D.h"
+#include "OpenGL/Buffers/VBO/VBO.h"
 #include "OpenGL/Matrix/ModelViewProjection.h"
 #include "OpenGL/Camera/Camera.h"
+#include "OpenGL/Texture/Texture.h"
+#include "Object/Object3D.h"
+#include "OBJLoader/OBJ_Loader.h"
+#include "File/BMP/BMPFile.h"
+
+using namespace objl;
 
 GLFWwindow* window;
 Camera *camera;
@@ -21,10 +23,12 @@ double originX = 0, originY = 0;
 GLfloat sensitivity = 0.05;
 bool g_Keys[1024] = { false };
 int width = 640, height = 480;
+ModelViewProjection mvp(640, 480);
+Loader loader;
 
 void checkKeys()
 {
-        GLfloat cameraSpeed = 0.01f * (GLfloat) deltaTime;
+        GLfloat cameraSpeed = 8.0f * (GLfloat) deltaTime;
         if (g_Keys[GLFW_KEY_W])
             camera->moveForward(cameraSpeed);
         if (g_Keys[GLFW_KEY_S])
@@ -34,6 +38,12 @@ void checkKeys()
         if (g_Keys[GLFW_KEY_D])
             camera->moveRight(cameraSpeed);
         camera->setNeedUpdate(true);
+}
+
+void resize(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+    mvp.resetPerspectiveMatrix(width, height);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -55,10 +65,12 @@ void cursor_callback(GLFWwindow *window, double x, double y)
     originY = y;
 }
 
+vector<GLfloat> datax;
+
 bool init()
 {
     glfwInit();
-    window = glfwCreateWindow(640, 480, "LearnOpenGL", nullptr, nullptr);
+    window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -76,6 +88,7 @@ bool init()
     originY = (double)height/2;
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, cursor_callback);
+    glfwSetWindowSizeCallback(window, resize);
     glfwSetCursorPos(window, originX, originY);
     camera = new Camera();
     return true;
@@ -86,80 +99,54 @@ int main()
     std::cout << "Hello, World!" << std::endl;
     if(!init()) return 0;
     glClearColor(0.1f, 0.4f, 0.7f, 1.0f);
-    Program program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
-    program.compile();
-    ModelViewProjection mat(640, 480);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnable(GL_DEPTH_TEST);
-    Object2D obj("test", "s.bmp", {
-            0.5f,  0.5f, -5.0f,
-            0.5f, -0.5f, -5.0f,
-            -0.5f, -0.5f, -5.0f,
-            -0.5f,  0.5f, -5.0f
-    }, {
-                         1.0f, 0.0f, 0.0f,
-                         0.0f, 1.0f, 0.0f,
-                         0.0f, 0.0f, 1.0f,
-                         1.0f, 1.0f, 1.0f
-                 },{
-                         0, 1, 3,
-                         1, 2, 3
-                 });
-
-    Object2D obj2("test2", "s.bmp", {
-            0.5f,  0.5f, 5.0f,
-            0.5f, -0.5f, 5.0f,
-            -0.5f, -0.5f, 5.0f,
-            -0.5f,  0.5f, 5.0f
-    }, {
-                         1.0f, 0.0f, 0.0f,
-                         0.0f, 1.0f, 0.0f,
-                         0.0f, 0.0f, 1.0f,
-                         1.0f, 1.0f, 1.0f
-                 },{
-                         0, 1, 3,
-                         1, 2, 3
-                 });
-    Object2D floor("floor", "floor.bmp", {
-            10.0f,  0.0f, 10.0f,
-            10.0f, 0.0f, -10.0f,
-            -10.0f, 0.0f, -10.0f,
-            -10.0f,  0.0f, 10.0f
-    }, {
-                          1.0f, 1.0f, 1.0f,
-                          1.0f, 1.0f, 1.0f,
-                          1.0f, 1.0f, 1.0f,
-                          1.0f, 1.0f, 1.0f
-                  },{
-                          0, 1, 3,
-                          1, 2, 3
-                  });
-    double time;
+    Program program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
+    program.compile();
+    BMPFile bmp("s.bmp");
+    if(bmp.load() != FILE_SUCCESSFUL)
+        throw runtime_error("Cannot read BMP");
+    //Texture* texture = new Texture(GL_TEXTURE_2D);
+    //texture->init(bmp.getData().data(), bmp.getHeader().Width, bmp.getHeader().Height, GL_RGB, GL_BGR, GL_UNSIGNED_BYTE);
+    /*Object3D obj("test",
+            {0.0f, 0.0f, -5.0f},
+            {
+            },
+            {
+            },
+            {
+            },
+            {
+            },
+            texture,
+            nullptr,
+            {});*/
+    Object3D obj;
+    loader.LoadFile("test.obj");
+    for(const Vertex &v : loader.LoadedVertices)
+    {
+        obj.getColors().emplace_back(1.0f, 1.0f, 1.0f);
+        obj.getPoints().emplace_back(v.Position.X, v.Position.Y, v.Position.Z);
+        obj.getTexCoords().emplace_back(v.TextureCoordinate.X, v.TextureCoordinate.Y);
+    }
+    obj.fillBuffers();
+    double oldTime;
+    //obj.getTransform()->rotate(radians(90.0f), {0.0f, 0.0f, 1.0f});
+    program.use();
+    obj.getTransform().scale({0.1f, 0.1f, 0.1f});
     while(!glfwWindowShouldClose(window))
     {
-        static int i = 1;
         glfwPollEvents();
-        time = glfwGetTime();
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-        mat.resetPerspectiveMatrix(width, height);
+        oldTime = glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        program.use();
+        program.updateMatrices(mvp);
         checkKeys();
-        camera->updateCamera();
-        mat.setView(camera->getView());
-        mat.setMatrices(program);
-        obj.translate({0.0f, 0.0f, 5.0f});
-        obj.rotate(0.01f, {0.1f, 0.0f, 0.0f});
-        obj.translate({0.0f, 0.0f, -5.0f});
-        obj.draw();
-        obj2.translate({0.0f, 0.0f, -5.0f});
-        obj2.rotate(0.01f, {0.1f, 0.0f, 0.0f});
-        obj2.translate({0.0f, 0.0f, 5.0f});
-        obj2.draw();
-        floor.draw();
+        camera->updateCamera(mvp);
+        //obj.getTransform()->rotate(radians(1.0f), {1.0f, 0.0f, 0.0f});
+        obj.draw(mvp);
+        glFlush();
         glfwSwapBuffers(window);
-        deltaTime = time-deltaTime;
+        deltaTime = glfwGetTime()-oldTime;
     }
     glfwTerminate();
     delete camera;

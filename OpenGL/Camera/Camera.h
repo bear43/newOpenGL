@@ -8,6 +8,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../Program/Program.h"
 #include <GL/gl.h>
 
 using namespace glm;
@@ -28,7 +29,7 @@ public:
 
     Camera() = default;
 
-    void updateCamera();
+    void updateCamera(ModelViewProjection &mvp);
 
     const vec3 &getPosition() const;
 

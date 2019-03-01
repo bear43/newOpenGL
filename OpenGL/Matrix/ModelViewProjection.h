@@ -12,6 +12,8 @@
 #include <GL/gl.h>
 #include "../Program/Program.h"
 
+class Program;
+
 using namespace glm;
 
 class ModelViewProjection
@@ -19,7 +21,7 @@ class ModelViewProjection
 private:
     inline static const GLfloat perspective_default_angle = 45.0f;
     inline static const GLfloat perspective_default_near_clip = 0.1f;
-    inline static const GLfloat perspective_default_far_clip = 100.0f;
+    inline static const GLfloat perspective_default_far_clip = 2000.0f;
     int width;
     int height;
     GLfloat perspective_angle = perspective_default_angle;
@@ -59,10 +61,6 @@ public:
     void resetPerspectiveMatrix(int width, int height, GLfloat angle);
 
     void resetPerspectiveMatrix(int width, int height, GLfloat angle, GLfloat near_clip, GLfloat far_clip);
-
-    void setMatrices(GLint model_id, GLint view_id, GLint proj_id);
-
-    void setMatrices(const Program &shader);
 };
 
 

@@ -4,11 +4,12 @@
 
 #include "Camera.h"
 
-void Camera::updateCamera()
+void Camera::updateCamera(ModelViewProjection &mvp)
 {
     if(needUpdate)
     {
         view = lookAt(position, position + direction, up);
+        mvp.setView(view);
         needUpdate = false;
     }
 }

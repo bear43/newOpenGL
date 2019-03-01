@@ -19,6 +19,9 @@ Program::~Program()
 
 void Program::attachShaders()
 {
+    glBindAttribLocation(program, 0, "position");
+    glBindAttribLocation(program, 1, "color");
+    glBindAttribLocation(program, 2, "texCoord");
     glAttachShader(program, vertexShader->getShaderId());
     glAttachShader(program, fragmentShader->getShaderId());
 }
@@ -67,4 +70,14 @@ void Program::compile()
 {
     attachShaders();
     link();
+}
+
+void Program::updateMatrices(const ModelViewProjection &mvp)
+{
+    GLint model_id = glGetUniformLocation(program, "model");
+    GLint view_id = glGetUniformLocation(program, "view");
+    GLint proj_id = glGetUniformLocation(program, "projection");
+    glUniformMatrix4fv(model_id, 1, GL_FALSE, value_ptr(mvp.getModel()));
+    glUniformMatrix4fv(view_id, 1, GL_FALSE, value_ptr(mvp.getView()));
+    glUniformMatrix4fv(proj_id, 1, GL_FALSE, value_ptr(mvp.getProjection()));
 }

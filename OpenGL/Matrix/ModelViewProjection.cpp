@@ -88,18 +88,3 @@ void ModelViewProjection::resetPerspectiveMatrix(int width, int height)
     resetPerspectiveMatrix(width, height, perspective_angle);
 }
 
-void ModelViewProjection::setMatrices(GLint model_id, GLint view_id, GLint proj_id)
-{
-    glUniformMatrix4fv(model_id, 1, GL_FALSE, value_ptr(model));
-    glUniformMatrix4fv(view_id, 1, GL_FALSE, value_ptr(view));
-    glUniformMatrix4fv(proj_id, 1, GL_FALSE, value_ptr(projection));
-}
-
-void ModelViewProjection::setMatrices(const Program &shader)
-{
-    setMatrices(
-            glGetUniformLocation(shader.getProgramID(), "model"),
-            glGetUniformLocation(shader.getProgramID(), "view"),
-            glGetUniformLocation(shader.getProgramID(), "projection"));
-}
-

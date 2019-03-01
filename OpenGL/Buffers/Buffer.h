@@ -16,14 +16,14 @@ using namespace std;
 class Buffer
 {
 protected:
-    GLuint buffer_id;
-    bool buffer_created;
+    GLuint buffer_id = 0;
+    bool buffer_created = false;
     string name;
     explicit Buffer(const string &name)
     {
         this->name = name;
         this->buffer_id = 0;
-        __glewGenBuffers(1, &buffer_id);
+        glGenBuffers(1, &buffer_id);
         buffer_created = true;
     }
     Buffer() = default;
@@ -31,7 +31,7 @@ public:
     virtual void bindBuffer() = 0;
     static void unbindBuffer()
     {
-        __glewBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     GLuint getBufferID()
     {

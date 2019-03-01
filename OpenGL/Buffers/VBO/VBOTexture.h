@@ -11,7 +11,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "../../Util/Vec3toVector.h"
+#include "../../Util/VecToVector.h"
+
+#define NVIDIA_DRIVER
 
 using namespace glm;
 

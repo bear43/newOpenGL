@@ -262,10 +262,10 @@ void Object2D::translate(const vec3 &direction)
 
 void Object2D::updatePoints()
 {
-    vector<vec3> p = Vec3toVector::reverseDoubleVector(points), c = Vec3toVector::reverseDoubleVector(colors);
+    vector<vec3> p = VecToVector::reverseDoubleVector3(points), c = VecToVector::reverseDoubleVector3(colors);
     for(vec3 &point : p)
         point = modelMatrix * vec4(point, 1.0);
-    points = Vec3toVector::transform(p);
+    points = VecToVector::transform3(p);
     dataBuffer->updateBuffer(p, c, *texture2D);
     modelMatrix = mat4(1.0);
 }

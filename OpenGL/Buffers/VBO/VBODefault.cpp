@@ -15,9 +15,9 @@ VBODefault::~VBODefault()
 void VBODefault::fillBuffer(const void *data, GLsizeiptr size)
 {
     if(!buffer_created) return;
-    __glewBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    __glewBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
-    __glewBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void VBODefault::fillBuffer(const vector<GLfloat> &vertices)
@@ -28,13 +28,13 @@ void VBODefault::fillBuffer(const vector<GLfloat> &vertices)
 void VBODefault::deleteBuffer()
 {
     if(!buffer_created) return;
-    __glewDeleteBuffers(1, &buffer_id);
+    glDeleteBuffers(1, &buffer_id);
     buffer_created = false;
 }
 
 void VBODefault::bindBuffer()
 {
-    if(buffer_created) __glewBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+    if(buffer_created) glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
 }
 
 void VBODefault::configure(VAO &vao)

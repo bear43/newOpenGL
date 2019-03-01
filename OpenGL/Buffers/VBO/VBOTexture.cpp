@@ -38,12 +38,12 @@ void VBOTexture::updateBuffer(const vector<vec3> &points, const vector<vec3> &co
     vector<GLfloat> currentPoint;
     for(const vec3 &point : points)
     {
-        currentPoint = Vec3toVector::transform(point);
+        currentPoint = VecToVector::transform3(point);
         vertices.insert(vertices.end(), currentPoint.begin(), currentPoint.end());
     }
     for(const vec3 &color : colors)
     {
-        currentPoint = Vec3toVector::transform(color);
+        currentPoint = VecToVector::transform3(color);
         v_colors.insert(v_colors.end(), currentPoint.begin(), currentPoint.end());
     }
     vector<GLfloat> &&data = configureData(vertices, v_colors, texture2D.getCoordinates());
@@ -53,7 +53,11 @@ void VBOTexture::updateBuffer(const vector<vec3> &points, const vector<vec3> &co
 void VBOTexture::updateBuffer(GLintptr offset, GLsizeiptr size, GLvoid *data)
 {
     bindBuffer();
+#ifdef NVIDIA_DRIVER
     glNamedBufferSubData(buffer_id, offset, size, data);
+#else
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+#endif
     unbindBuffer();
 }
 
