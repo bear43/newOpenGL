@@ -8,8 +8,8 @@
 #include "../OpenGL/Buffers/VBO/Util.h"
 
 Object3D::Object3D(const string &name, const vec3 &position, const vector<vec3> &points, const vector<vec3> &colors,
-                   const vector<vec2> &texCoords, const vector<u32vec3> &indices, Texture *texture, Object3D *parent,
-                   const vector<Object3D *> &children) : name(name), parent(parent), texture(texture),
+                   const vector<vec2> &texCoords, const vector<u32vec3> &indices, Object3D *parent,
+                   const vector<Object3D *> &children) : name(name), parent(parent),
                    vao(fmt::format("VAO | Object3D '{0}'", name)),
                    vbo(fmt::format("VBO | Object3D '{0}'", name), 8*sizeof(GLfloat)),
                    ibo(fmt::format("IBO | Object3D '{0}'", name))
@@ -32,24 +32,26 @@ Object3D::Object3D(const string &name, const vec3 &position, const vector<vec3> 
     this->vbo.configure(this->vao);
     this->ibo.fillBuffer(VecToVector::transform3i(this->indices));
     this->ibo.configure(this->vao);
+    totalObjectsCount++;
 }
 
 Object3D::Object3D(const string &name, const vec3 &position, const vector<GLfloat> &points, const vector<GLfloat> &colors,
-         const vector<GLfloat> &texCoords, const vector<GLuint> &indices, Texture *texture,
+         const vector<GLfloat> &texCoords, const vector<GLuint> &indices,
          Object3D *parent, const vector<Object3D *> &children) :
          Object3D(name, position,
                  VecToVector::reverseDoubleVector3(points),
                  VecToVector::reverseDoubleVector3(colors),
                  VecToVector::reverseDoubleVector2(texCoords),
                  VecToVector::reverseDoubleVector3(indices),
-                 texture,
                  parent,
                  children)
 {
 
 }
 
-Object3D::Object3D() : vao(fmt::format("VAO | Object3D '{0}'", name)),
+Object3D::Object3D(const string& name) :
+                       name(name),
+                       vao(fmt::format("VAO | Object3D '{0}'", name)),
                        vbo(fmt::format("VBO | Object3D '{0}'", name), 8*sizeof(GLfloat)),
                        ibo(fmt::format("IBO | Object3D '{0}'", name))
 {
@@ -58,11 +60,13 @@ Object3D::Object3D() : vao(fmt::format("VAO | Object3D '{0}'", name)),
     this->vbo.addVertexAttribPointerFloat(this->vao, 2, GL_FALSE, 2);//texCoord
     this->vbo.configure(this->vao);
     this->ibo.configure(this->vao);
+    totalObjectsCount++;
 }
 
 Object3D::~Object3D()
 {
     dispose();
+    totalObjectsCount--;
 }
 
 const string &Object3D::getName() const
@@ -87,7 +91,6 @@ Transform &Object3D::getTransform()
 
 void Object3D::dispose()
 {
-    NullPtrChecker::_delete(&texture);
     for(Object3D *obj : children)
         NullPtrChecker::_delete(&obj);
 }
@@ -102,12 +105,12 @@ void Object3D::setIndices(const vector<u32vec3> &indices)
     Object3D::indices = indices;
 }
 
-void Object3D::draw(ModelViewProjection &mvp)
+void Object3D::draw(Program& shader, ModelViewProjection &mvp)
 {
     vao.bindBuffer();
-    if(texture != nullptr)
-        texture->bind();
-    mvp.setModel(getModelMatrix());
+    mvp.setModel(mvp.getModel()*transform.getModelMatrix());
+    shader.updateMatrices(mvp);
+    mvp.setModel(mat4(1.0));
     if(!indices.empty())
     {
         glDrawElements(GL_TRIANGLES, (GLsizei)indices.size()*3, GL_UNSIGNED_INT, nullptr);
@@ -117,8 +120,6 @@ void Object3D::draw(ModelViewProjection &mvp)
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei)points.size());
     }
     VAO::unbindBuffer();
-    if(texture != nullptr)
-    texture->unbind();
 }
 
 VAO &Object3D::getVao()
@@ -151,11 +152,6 @@ vector<vec2> &Object3D::getTexCoords()
     return texCoords;
 }
 
-Texture *Object3D::getTexture()
-{
-    return texture;
-}
-
 Object3D *Object3D::getParent()
 {
     return parent;
@@ -175,4 +171,47 @@ void Object3D::fillBuffers()
     );
     this->vbo.fillBuffer(data.data(), data.size()*sizeof(GLfloat), GL_DYNAMIC_DRAW);
     this->ibo.fillBuffer(VecToVector::transform3i(this->indices));
+}
+
+Object3D::Object3D() : Object3D(fmt::format("Object3D {0}", totalObjectsCount))
+{
+
+}
+
+Object3D::Object3D(const string &name, const vector<vec3> &points,
+                                       const vector<vec3> &colors,
+                                       const vector<vec2> &texCoords,
+                                       const vector<u32vec3> &indices) : Object3D(name,
+                                                                                  { 0.0f, 0.0f, 0.0f},
+                                                                                  points, colors, texCoords,
+                                                                                  indices, nullptr, {})
+{
+
+}
+
+Object3D::Object3D(const string &name, const vector<GLfloat> &vertices,
+                                       const vector<GLfloat> &colors,
+                                       const vector<GLfloat> &texCoords,
+                                       const vector<GLuint> &indices) :
+                                       Object3D(name,
+                                                VecToVector::reverseDoubleVector3(vertices),
+                                                VecToVector::reverseDoubleVector3(colors),
+                                                VecToVector::reverseDoubleVector2(texCoords),
+                                                VecToVector::reverseDoubleVector3(indices))
+{
+    vector<GLfloat> data = VecToVector::uniteVertColTexToVector(vertices, colors, texCoords);
+    this->vbo.fillBuffer(data.data(), data.size()*sizeof(GLfloat), GL_DYNAMIC_DRAW);
+    this->ibo.fillBuffer(indices);
+}
+
+Object3D::Object3D(const string &name, const objl::Mesh &mesh) : Object3D(name)
+{
+    for (const objl::Vertex &v : mesh.Vertices)
+    {
+        colors.emplace_back(1.0f, 1.0f, 1.0f);
+        points.emplace_back(v.Position.X, v.Position.Y, v.Position.Z);
+        texCoords.emplace_back(v.TextureCoordinate.X, v.TextureCoordinate.Y);
+    }
+    indices = VecToVector::reverseDoubleVector3(mesh.Indices);
+    fillBuffers();
 }

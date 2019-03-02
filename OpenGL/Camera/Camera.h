@@ -22,6 +22,7 @@ private:
     mat4 view = lookAt(position, position + direction, up);
     GLfloat xAngle = -90.0f;
     GLfloat yAngle = 0.0f;
+    GLfloat sensitivity = 0.05f;
     bool needUpdate = false;
 public:
 

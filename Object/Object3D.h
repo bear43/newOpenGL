@@ -16,6 +16,11 @@
 #include "../OpenGL/Buffers/IBO/IBO.h"
 #include "../OpenGL/Matrix/ModelViewProjection.h"
 #include <GL/gl.h>
+#ifndef DDD
+#define DDD
+#define ONLY_DECLARATION
+#include "../OBJLoader/OBJ_Loader.h"
+#endif
 
 
 using namespace std;
@@ -26,13 +31,13 @@ class VBO;
 class Object3D
 {
 private:
+    static inline GLuint totalObjectsCount = 0;
     string name;
     vector<vec3> points = {};
     vector<vec3> colors = {};
     vector<vec2> texCoords = {};
     vector<u32vec3> indices = {};
     Transform transform ={};
-    Texture *texture = nullptr;
     Object3D *parent = nullptr;
     vector<Object3D*> children = {};
     VAO vao;
@@ -40,16 +45,26 @@ private:
     IBO ibo;
 public:
     Object3D(const string &name, const vec3 &position, const vector<vec3> &points, const vector<vec3> &colors,
-            const vector<vec2> &texCoords, const vector<u32vec3> &indices, Texture *texture,
+            const vector<vec2> &texCoords, const vector<u32vec3> &indices,
             Object3D *parent, const vector<Object3D *> &children);
     Object3D(const string &name, const vec3 &position, const vector<GLfloat> &points, const vector<GLfloat> &colors,
-             const vector<GLfloat> &texCoords, const vector<GLuint> &indices, Texture *texture,
+             const vector<GLfloat> &texCoords, const vector<GLuint> &indices,
              Object3D *parent, const vector<Object3D *> &children);
+    Object3D(const string &name, const vector<vec3> &points,
+                                 const vector<vec3> &colors,
+                                 const vector<vec2> &texCoords,
+                                 const vector<u32vec3> &indices);
+    Object3D(const string &name, const vector<GLfloat> &vertices,
+                                 const vector<GLfloat> &colors,
+                                 const vector<GLfloat> &texCoords,
+                                 const vector<GLuint> &indices);
+    Object3D(const string &name, const objl::Mesh &mesh);
+    explicit Object3D(const string &name);
     Object3D();
 
     virtual ~Object3D();
     void dispose();
-    void draw(ModelViewProjection &mvp);
+    void draw(Program& shader, ModelViewProjection &mvp);
     const string &getName() const;
     void setName(const string &name);
     mat4 getModelMatrix();
@@ -65,8 +80,6 @@ public:
     vector<vec3> &getColors();
 
     vector<vec2> &getTexCoords();
-
-    Texture *getTexture();
 
     Object3D *getParent();
 

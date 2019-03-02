@@ -11,39 +11,31 @@
 #include "OpenGL/Camera/Camera.h"
 #include "OpenGL/Texture/Texture.h"
 #include "Object/Object3D.h"
-#include "OBJLoader/OBJ_Loader.h"
 #include "File/BMP/BMPFile.h"
+#include "OpenGL/Util/VecToVector.h"
+#include "System.h"
+#include "Model/Model.h"
 
-using namespace objl;
-
-GLFWwindow* window;
-Camera *camera;
 double deltaTime = 1.0;
-double originX = 0, originY = 0;
-GLfloat sensitivity = 0.05;
 bool g_Keys[1024] = { false };
-int width = 640, height = 480;
-ModelViewProjection mvp(640, 480);
-Loader loader;
 
 void checkKeys()
 {
         GLfloat cameraSpeed = 8.0f * (GLfloat) deltaTime;
         if (g_Keys[GLFW_KEY_W])
-            camera->moveForward(cameraSpeed);
+            System::camera->moveForward(cameraSpeed);
         if (g_Keys[GLFW_KEY_S])
-            camera->moveBack(cameraSpeed);
+            System::camera->moveBack(cameraSpeed);
         if (g_Keys[GLFW_KEY_A])
-            camera->moveLeft(cameraSpeed);
+            System::camera->moveLeft(cameraSpeed);
         if (g_Keys[GLFW_KEY_D])
-            camera->moveRight(cameraSpeed);
-        camera->setNeedUpdate(true);
+            System::camera->moveRight(cameraSpeed);
+        System::camera->setNeedUpdate(true);
 }
 
 void resize(GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
-    mvp.resetPerspectiveMatrix(width, height);
+    System::onResize(width, height);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -56,99 +48,51 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void cursor_callback(GLFWwindow *window, double x, double y)
 {
-    auto deltaX = (GLfloat)(originX - x);
-    auto deltaY = (GLfloat)(originY - y);
-    deltaX *= sensitivity;
-    deltaY *= sensitivity;
-    camera->updateDirectionByDeltaXY(deltaX, deltaY);
-    originX = x;
-    originY = y;
-}
-
-vector<GLfloat> datax;
-
-bool init()
-{
-    glfwInit();
-    window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
-    if (window == nullptr)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return false;
-    }
-    glfwMakeContextCurrent(window);
-    if (glewInit() != GLEW_OK)
-    {
-        std::cout << "Failed to initialize GLEW" << std::endl;
-        return false;
-    }
-    glfwSetKeyCallback(window, key_callback);
-    originX = (double)width/2;
-    originY = (double)height/2;
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, cursor_callback);
-    glfwSetWindowSizeCallback(window, resize);
-    glfwSetCursorPos(window, originX, originY);
-    camera = new Camera();
-    return true;
+    static GLfloat originX = System::WIDTH;
+    static GLfloat originY = System::HEIGHT;
+    GLfloat deltaX = (originX - (GLfloat)x);
+    GLfloat deltaY = (originY - (GLfloat)y);
+    System::camera->updateDirectionByDeltaXY(deltaX, deltaY);
+    originX = (GLfloat)x;
+    originY = (GLfloat)y;
 }
 
 int main()
 {
     std::cout << "Hello, World!" << std::endl;
-    if(!init()) return 0;
+    System::setFunctions(key_callback, cursor_callback, resize);
+    if(!System::init()) return 0;
     glClearColor(0.1f, 0.4f, 0.7f, 1.0f);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
     Program program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
     program.compile();
     BMPFile bmp("s.bmp");
     if(bmp.load() != FILE_SUCCESSFUL)
         throw runtime_error("Cannot read BMP");
-    //Texture* texture = new Texture(GL_TEXTURE_2D);
-    //texture->init(bmp.getData().data(), bmp.getHeader().Width, bmp.getHeader().Height, GL_RGB, GL_BGR, GL_UNSIGNED_BYTE);
-    /*Object3D obj("test",
-            {0.0f, 0.0f, -5.0f},
-            {
-            },
-            {
-            },
-            {
-            },
-            {
-            },
-            texture,
-            nullptr,
-            {});*/
-    Object3D obj;
-    loader.LoadFile("test.obj");
-    for(const Vertex &v : loader.LoadedVertices)
-    {
-        obj.getColors().emplace_back(1.0f, 1.0f, 1.0f);
-        obj.getPoints().emplace_back(v.Position.X, v.Position.Y, v.Position.Z);
-        obj.getTexCoords().emplace_back(v.TextureCoordinate.X, v.TextureCoordinate.Y);
-    }
-    obj.fillBuffers();
+    Texture* texture = new Texture(GL_TEXTURE_2D);
+    texture->init(bmp.getData().data(), bmp.getHeader().Width, bmp.getHeader().Height, GL_RGB, GL_BGR, GL_UNSIGNED_BYTE);
+    Model testModel("testModel", "test.obj");
     double oldTime;
-    //obj.getTransform()->rotate(radians(90.0f), {0.0f, 0.0f, 1.0f});
     program.use();
-    obj.getTransform().scale({0.1f, 0.1f, 0.1f});
-    while(!glfwWindowShouldClose(window))
+    while(!glfwWindowShouldClose(System::window))
     {
         glfwPollEvents();
         oldTime = glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        program.updateMatrices(mvp);
         checkKeys();
-        camera->updateCamera(mvp);
-        //obj.getTransform()->rotate(radians(1.0f), {1.0f, 0.0f, 0.0f});
-        obj.draw(mvp);
+        System::camera->updateCamera(System::mvp);
+        testModel.getTransform().scale({0.1f, 0.1f, 0.1f});
+        texture->bind();
+        testModel.draw(program, System::mvp);
+        texture->unbind();
         glFlush();
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(System::window);
         deltaTime = glfwGetTime()-oldTime;
     }
     glfwTerminate();
-    delete camera;
+    delete System::camera;
     return 0;
 }

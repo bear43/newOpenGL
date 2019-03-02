@@ -45,31 +45,10 @@ namespace Util
     }
     vector<GLfloat> toVector(const vector<vec3> &points, const vector<vec3> &colors, const vector<vec2> &texCoords)
     {
-        vector<GLfloat> vertices, v_colors, v_texCoords;
-        vector<GLfloat> currentPoint;
-        for(const vec3 &point : points)
-        {
-            currentPoint = VecToVector::transform3(point);
-            vertices.insert(vertices.end(), currentPoint.begin(), currentPoint.end());
-        }
-        for(const vec3 &color : colors)
-        {
-            currentPoint = VecToVector::transform3(color);
-            v_colors.insert(v_colors.end(), currentPoint.begin(), currentPoint.end());
-        }
-        for(const vec2 &texCoord : texCoords)
-        {
-            currentPoint = VecToVector::transform2(texCoord);
-            v_texCoords.insert(v_texCoords.end(), currentPoint.begin(), currentPoint.end());
-        }
-        vector<GLfloat> data;
-        for(int i = 0, j = 0; i < vertices.size(); i+= 3, j+= 2)
-        {
-            data.insert(data.end(), vertices.begin()+i, vertices.begin()+i+3);
-            data.insert(data.end(), v_colors.begin()+i, v_colors.begin()+i+3);
-            data.insert(data.end(), v_texCoords.begin()+j, v_texCoords.begin()+j+2);
-        }
-        return data;
+        vector<GLfloat> vertices = VecToVector::transform3(points),
+                        v_colors = VecToVector::transform3(colors),
+                        v_texCoords = VecToVector::transform2(texCoords);
+        return VecToVector::uniteVertColTexToVector(vertices, v_colors, v_texCoords);
     }
 };
 

@@ -33,6 +33,9 @@ public:
     static vector<GLfloat> transform2(const vector<vec2> &_vecs2);
     static vector<vec2> reverseDoubleVector2(const vector<GLfloat> &_vector);
     static vec2 reverse2(const vector<GLfloat> &_vector);
+    static vector<GLfloat> uniteVertColTexToVector(const vector<GLfloat> &vertices,
+                                                   const vector<GLfloat> &colors,
+                                                   const vector<GLfloat> &texCoords);
     //static vector<vec3> fromObjVertexToVec_Pos(const vector<objl::Vertex> &vertices);
     //static vector<vec3> fromObjVertexToVec_Tex(const vector<objl::Vertex> &vertices);
     //static void fromObjToVBO(const vector<objl::Vertex> &vertices);

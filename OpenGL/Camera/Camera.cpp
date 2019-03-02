@@ -93,8 +93,8 @@ void Camera::setNeedUpdate(bool needUpdate)
 
 void Camera::updateDirectionByDeltaXY(GLfloat deltaX, GLfloat deltaY)
 {
-    xAngle += deltaX;
-    yAngle += deltaY;
+    xAngle += deltaX*sensitivity;
+    yAngle += deltaY*sensitivity;
     if(xAngle > 360.0f || xAngle < -360.0f)
         xAngle =  0.0f;
     if(yAngle > 90.0f)

@@ -28,10 +28,7 @@ Texture::Texture(const vector<vec3> &coordinates, unsigned int texture_wrap_s, u
 
 Texture::Texture(unsigned int texture_wrap_s, unsigned int texture_wrap_t, unsigned int texture_wrap_r,
                  unsigned int texture_filter, unsigned int texture_min_filter, unsigned int texture_mag_filter,
-                 GLenum texture_type) : texture_wrap_s(texture_wrap_s), texture_wrap_t(texture_wrap_t),
-                                        texture_wrap_r(texture_wrap_r), texture_filter(texture_filter),
-                                        texture_min_filter(texture_min_filter), texture_mag_filter(texture_mag_filter),
-                                        texture_type(texture_type)
+                 GLenum texture_type) : Texture({}, texture_wrap_s, texture_wrap_t, texture_wrap_r, texture_filter, texture_min_filter, texture_mag_filter, texture_type)
 {}
 
 Texture::Texture(GLenum texture_type) : Texture(GL_REPEAT, GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, texture_type)

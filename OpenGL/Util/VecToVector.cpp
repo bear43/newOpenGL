@@ -33,7 +33,7 @@ vector<vec3> VecToVector::reverseDoubleVector3(const vector<GLfloat> &_vector)
 {
     vector<GLfloat> *current;
     vector<vec3> _vec;
-    for(int i = 0; i < _vector.size(); i+=3)
+    for(int i = 0; i < _vector.size()-2; i+=3)
     {
         current = new vector<GLfloat>{ _vector[i], _vector[i+1], _vector[i+2] };
         _vec.push_back(reverse3(*current));
@@ -122,9 +122,10 @@ vec2 VecToVector::reverse2(const vector<GLfloat> &_vector)
 
 vector<u32vec3> VecToVector::reverseDoubleVector3(const vector<GLuint> &_vector)
 {
+    if(_vector.empty() || _vector.size() < 3) return {};
     vector<GLuint> *current;
     vector<u32vec3> _vec;
-    for(int i = 0; i < _vector.size(); i+=3)
+    for(int i = 0; i < _vector.size()-2; i+=3)
     {
         current = new vector<GLuint>{ _vector[i], _vector[i+1], _vector[i+2] };
         _vec.push_back(reverse3(*current));
@@ -136,4 +137,18 @@ vector<u32vec3> VecToVector::reverseDoubleVector3(const vector<GLuint> &_vector)
 u32vec3 VecToVector::reverse3(const vector<GLuint> &_vector)
 {
     return u32vec3(_vector[0], _vector[1], _vector[2]);
+}
+
+vector<GLfloat> VecToVector::uniteVertColTexToVector(const vector<GLfloat> &vertices,
+                                                     const vector<GLfloat> &colors,
+                                                     const vector<GLfloat> &texCoords)
+{
+    vector<GLfloat> data;
+    for(int i = 0, j = 0; i < vertices.size(); i+= 3, j+= 2)
+    {
+        data.insert(data.end(), vertices.begin()+i, vertices.begin()+i+3);
+        data.insert(data.end(), colors.begin()+i, colors.begin()+i+3);
+        data.insert(data.end(), texCoords.begin()+j, texCoords.begin()+j+2);
+    }
+    return data;
 }
