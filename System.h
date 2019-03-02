@@ -16,8 +16,8 @@ using namespace std;
 
 namespace System
 {
-    const int WIDTH = 800;
-    const int HEIGHT = 600;
+    const int WIDTH = 1920;
+    const int HEIGHT = 1080;
     int width = WIDTH;
     int height = HEIGHT;
     GLFWwindow *window;
@@ -25,7 +25,7 @@ namespace System
     GLFWcursorposfun cursor_callback;
     GLFWwindowsizefun resize_callback;
     Camera *camera;
-    ModelViewProjection mvp(640, 480);
+    ModelViewProjection mvp(width, height);
 
 
     bool init()

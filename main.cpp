@@ -62,7 +62,7 @@ int main()
     std::cout << "Hello, World!" << std::endl;
     System::setFunctions(key_callback, cursor_callback, resize);
     if(!System::init()) return 0;
-    glClearColor(0.1f, 0.4f, 0.7f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -77,6 +77,8 @@ int main()
     Model testModel("testModel", "test.obj");
     double oldTime;
     program.use();
+    GLint lightPos_id = glGetUniformLocation(program.getProgramID(), "lightPos");
+    vec3 lightPos;
     while(!glfwWindowShouldClose(System::window))
     {
         glfwPollEvents();
@@ -84,7 +86,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         checkKeys();
         System::camera->updateCamera(System::mvp);
-        testModel.getTransform().scale({0.1f, 0.1f, 0.1f});
+        glUniform3f(lightPos_id, System::camera->getPosition()[0], System::camera->getPosition()[1], System::camera->getPosition()[2]);
+        testModel.getTransform().identityAllMatrix();
+        //testModel.getTransform().scale({0.01f, 0.01f, 0.01f});
+        testModel.getTransform().translate({0.0f, 0.0f, -48.0f});
         texture->bind();
         testModel.draw(program, System::mvp);
         texture->unbind();

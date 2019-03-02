@@ -47,8 +47,7 @@ void Model::draw(Program& shader, ModelViewProjection &mvp)
         mvp.setModel(transform.getModelMatrix());
         mesh->draw(shader, mvp);
     }
-    mvp.setModel(mat4(1.0));
-    transform.identityAllMatrix();
+    //mvp.setModel(mat4(1.0));
 }
 
 Transform &Model::getTransform()

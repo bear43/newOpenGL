@@ -50,6 +50,14 @@ namespace Util
                         v_texCoords = VecToVector::transform2(texCoords);
         return VecToVector::uniteVertColTexToVector(vertices, v_colors, v_texCoords);
     }
+    vector<GLfloat> toVector(const vector<vec3> &points, const vector<vec3> &colors, const vector<vec3> &normals, const vector<vec2> &texCoords)
+    {
+        vector<GLfloat> vertices = VecToVector::transform3(points),
+                v_colors = VecToVector::transform3(colors),
+                v_texCoords = VecToVector::transform2(texCoords),
+                v_normals = VecToVector::transform3(normals);
+        return VecToVector::uniteVertColNormTexToVector(vertices, v_colors, v_normals, v_texCoords);
+    }
 };
 
 

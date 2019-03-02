@@ -152,3 +152,19 @@ vector<GLfloat> VecToVector::uniteVertColTexToVector(const vector<GLfloat> &vert
     }
     return data;
 }
+
+vector<GLfloat> VecToVector::uniteVertColNormTexToVector(const vector<GLfloat> &vertices,
+                                                     const vector<GLfloat> &colors,
+                                                     const vector<GLfloat> &normals,
+                                                     const vector<GLfloat> &texCoords)
+{
+    vector<GLfloat> data;
+    for(int i = 0, j = 0; i < vertices.size(); i+= 3, j+= 2)
+    {
+        data.insert(data.end(), vertices.begin()+i, vertices.begin()+i+3);
+        data.insert(data.end(), colors.begin()+i, colors.begin()+i+3);
+        data.insert(data.end(), normals.begin()+i, normals.begin()+i+3);
+        data.insert(data.end(), texCoords.begin()+j, texCoords.begin()+j+2);
+    }
+    return data;
+}

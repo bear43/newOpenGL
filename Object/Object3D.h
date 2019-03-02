@@ -35,6 +35,7 @@ private:
     string name;
     vector<vec3> points = {};
     vector<vec3> colors = {};
+    vector<vec3> normals = {};
     vector<vec2> texCoords = {};
     vector<u32vec3> indices = {};
     Transform transform ={};
@@ -45,17 +46,19 @@ private:
     IBO ibo;
 public:
     Object3D(const string &name, const vec3 &position, const vector<vec3> &points, const vector<vec3> &colors,
-            const vector<vec2> &texCoords, const vector<u32vec3> &indices,
+            const vector<vec3> &normals, const vector<vec2> &texCoords, const vector<u32vec3> &indices,
             Object3D *parent, const vector<Object3D *> &children);
     Object3D(const string &name, const vec3 &position, const vector<GLfloat> &points, const vector<GLfloat> &colors,
-             const vector<GLfloat> &texCoords, const vector<GLuint> &indices,
+             const vector<GLfloat> &normals, const vector<GLfloat> &texCoords, const vector<GLuint> &indices,
              Object3D *parent, const vector<Object3D *> &children);
     Object3D(const string &name, const vector<vec3> &points,
                                  const vector<vec3> &colors,
+                                 const vector<vec3> &normals,
                                  const vector<vec2> &texCoords,
                                  const vector<u32vec3> &indices);
     Object3D(const string &name, const vector<GLfloat> &vertices,
                                  const vector<GLfloat> &colors,
+                                 const vector<GLfloat> &normals,
                                  const vector<GLfloat> &texCoords,
                                  const vector<GLuint> &indices);
     Object3D(const string &name, const objl::Mesh &mesh);

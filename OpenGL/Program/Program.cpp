@@ -21,7 +21,8 @@ void Program::attachShaders()
 {
     glBindAttribLocation(program, 0, "position");
     glBindAttribLocation(program, 1, "color");
-    glBindAttribLocation(program, 2, "texCoord");
+    glBindAttribLocation(program, 2, "normal");
+    glBindAttribLocation(program, 3, "texCoord");
     glAttachShader(program, vertexShader->getShaderId());
     glAttachShader(program, fragmentShader->getShaderId());
 }

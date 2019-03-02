@@ -64,6 +64,7 @@ Camera::Camera(const vec3 &position, const vec3 &up, const vec3 &direction) : po
 void Camera::moveForward(GLfloat speed)
 {
     position += direction * speed;
+    needUpdate = true;
 }
 
 void Camera::moveBack(GLfloat speed)
@@ -74,6 +75,7 @@ void Camera::moveBack(GLfloat speed)
 void Camera::moveLeft(GLfloat speed)
 {
     position -= glm::normalize(glm::cross(direction, up)) * speed;
+    needUpdate = true;
 }
 
 void Camera::moveRight(GLfloat speed)
