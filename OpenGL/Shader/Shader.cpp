@@ -133,3 +133,11 @@ void Shader::setLightSource(const LightSource &source)
     setUniformVec3("lightColor", source.getColor());
     setUniformFloat("lightMaxDistance", source.getMaxDistance());
 }
+
+void Shader::setMaterial(const Material &material)
+{
+    setUniformVec3("material.ambient", material.getAmbient());
+    setUniformVec3("material.diffuse", material.getDiffuse());
+    setUniformVec3("material.specular", material.getSpecular());
+    setUniformFloat("material.shininess", 32.0f);
+}

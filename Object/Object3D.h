@@ -44,6 +44,7 @@ private:
     VAO vao;
     VBO vbo;
     IBO ibo;
+    Material material;
 public:
     Object3D(const string &name, const vec3 &position, const vector<vec3> &points, const vector<vec3> &colors,
             const vector<vec3> &normals, const vector<vec2> &texCoords, const vector<u32vec3> &indices,

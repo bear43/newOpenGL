@@ -12,9 +12,11 @@
 #include "FragmentShader/FragmentShader.h"
 #include "../Matrix/ModelViewProjection.h"
 #include "../../Object/LightSource.h"
+#include "../../Object/Material.h"
 
 class ModelViewProjection;
 class LightSource;
+class Material;
 
 using namespace std;
 using namespace glm;
@@ -45,6 +47,7 @@ public:
     void setViewMatrix(const mat4 &viewMatrix);
     void setProjectionMatrix(const mat4 &projectionMatrix);
     void setLightSource(const LightSource &source);
+    void setMaterial(const Material &material);
     GLuint getProgramID() const;
 };
 

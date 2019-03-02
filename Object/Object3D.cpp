@@ -101,6 +101,9 @@ Object3D::Object3D(const string &name, const objl::Mesh &mesh) : Object3D(name)
         normals.emplace_back(v.Normal.X, v.Normal.Y, v.Normal.Z);
         texCoords.emplace_back(v.TextureCoordinate.X, v.TextureCoordinate.Y);
     }
+    material = mesh;
+    if(material.isEmpty())
+        material = Material::getDEFAULT_MATERIAL();
     indices = VecToVector::reverseDoubleVector3(mesh.Indices);
     fillBuffers();
 }
@@ -151,6 +154,7 @@ void Object3D::draw(Shader& shader)
 {
     vao.bindBuffer();
     shader.setModelMatrix(transform.getModelMatrix());
+    material.draw(shader);
     if(!indices.empty())
     {
         glDrawElements(GL_TRIANGLES, (GLsizei)indices.size()*3, GL_UNSIGNED_INT, nullptr);

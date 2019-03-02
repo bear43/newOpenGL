@@ -28,7 +28,7 @@
 //
 // Description: The namespace that holds eveyrthing that
 //	is needed and used for the OBJ Model ObjLoader
-inline namespace objl
+namespace objl
 {
 	// Structure: Vector2
 	//
