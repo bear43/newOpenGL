@@ -30,7 +30,7 @@ public:
     void loadMeshes();
     //------------------------------------------------------------------------------------------------------------------
 
-    void draw(Program& shader, ModelViewProjection &mvp);
+    void draw(Shader& shader);
 
     Transform &getTransform();
 

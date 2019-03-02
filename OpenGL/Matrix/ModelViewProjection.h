@@ -10,9 +10,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include "../Program/Program.h"
+#include "../Shader/Shader.h"
 
-class Program;
+class Shader;
 
 using namespace glm;
 

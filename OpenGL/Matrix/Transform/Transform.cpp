@@ -9,6 +9,11 @@ Transform::Transform(const mat4 &scaleMatrix, const mat4 &rotationMatrix, const 
         scaleMatrix), rotationMatrix(rotationMatrix), translationMatrix(translationMatrix)
 {}
 
+Transform::Transform(const Transform &transform)
+{
+    copy(transform);
+}
+
 vec4 Transform::getVector4(const vec4 &vector)
 {
     return getModelMatrix() * vector;
@@ -134,4 +139,26 @@ Transform::Transform(const vec3 &position, const mat4 &scaleMatrix, const mat4 &
                      const mat4 &translationMatrix) : Transform({position, 1.0f}, scaleMatrix, rotationMatrix, translationMatrix)
 {
     translate(position);
+}
+
+void Transform::copy(const Transform &transform)
+{
+    this->scaleMatrix = transform.scaleMatrix;
+    this->rotationMatrix = transform.rotationMatrix;
+    this->translationMatrix = transform.translationMatrix;
+    this->position = transform.position;
+}
+
+Transform &Transform::operator=(const Transform &transform)
+{
+    copy(transform);
+    return *this;
+}
+
+void Transform::addTransformation(const Transform &transform)
+{
+    //this->position + transform.position;
+    this->translationMatrix *= transform.translationMatrix;
+    this->rotationMatrix *= transform.rotationMatrix;
+    this->scaleMatrix *= transform.scaleMatrix;
 }

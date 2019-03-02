@@ -21,9 +21,11 @@ public:
     Transform(const vec4 &position, const mat4 &scaleMatrix, const mat4 &rotationMatrix, const mat4 &translationMatrix);
     Transform(const vec3 &position, const mat4 &scaleMatrix, const mat4 &rotationMatrix, const mat4 &translationMatrix);
     Transform(const mat4 &scaleMatrix, const mat4 &rotationMatrix, const mat4 &translationMatrix);
+    Transform(const Transform &transform);
     explicit Transform(const vec4 &position);
     explicit Transform(const vec3 &position);
     Transform() = default;
+    Transform& operator=(const Transform& transform);
     mat4 getModelMatrix();
     vec4 getVector4(const vec4 &vector);
     vec3 getVector3(const vec3 &vector, float w);
@@ -42,6 +44,9 @@ public:
     void setRotationMatrix(const mat4 &rotationMatrix);
     const mat4 &getTranslationMatrix() const;
     void setTranslationMatrix(const mat4 &translationMatrix);
+    void copy(const Transform &transform);
+    void addTransformation(const Transform &transform);
+
 
     const vec4 &getPosition() const;
 

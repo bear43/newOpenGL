@@ -147,12 +147,10 @@ void Object3D::setIndices(const vector<u32vec3> &indices)
     Object3D::indices = indices;
 }
 
-void Object3D::draw(Program& shader, ModelViewProjection &mvp)
+void Object3D::draw(Shader& shader)
 {
     vao.bindBuffer();
-    mvp.setModel(mvp.getModel()*transform.getModelMatrix());
-    shader.updateMatrices(mvp);
-    mvp.setModel(mat4(1.0));
+    shader.setModelMatrix(transform.getModelMatrix());
     if(!indices.empty())
     {
         glDrawElements(GL_TRIANGLES, (GLsizei)indices.size()*3, GL_UNSIGNED_INT, nullptr);

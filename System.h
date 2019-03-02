@@ -26,6 +26,7 @@ namespace System
     GLFWwindowsizefun resize_callback;
     Camera *camera;
     ModelViewProjection mvp(width, height);
+    LightSource lightSource({1.0f, 1.0f, 1.0f});
 
 
     bool init()

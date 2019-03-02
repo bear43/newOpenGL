@@ -67,7 +67,7 @@ public:
 
     virtual ~Object3D();
     void dispose();
-    void draw(Program& shader, ModelViewProjection &mvp);
+    void draw(Shader& shader);
     const string &getName() const;
     void setName(const string &name);
     mat4 getModelMatrix();

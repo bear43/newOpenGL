@@ -38,16 +38,17 @@ void Model::loadMeshes()
     }
 }
 
-void Model::draw(Program& shader, ModelViewProjection &mvp)
+void Model::draw(Shader& shader)
 {
 
     for(Object3D *mesh : meshes)
     {
         //TODO Texture!
-        mvp.setModel(transform.getModelMatrix());
-        mesh->draw(shader, mvp);
+        Transform savedTransform(mesh->getTransform());
+        mesh->getTransform().addTransformation(transform);
+        mesh->draw(shader);
+        mesh->getTransform().copy(savedTransform);
     }
-    //mvp.setModel(mat4(1.0));
 }
 
 Transform &Model::getTransform()

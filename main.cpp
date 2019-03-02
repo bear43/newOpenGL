@@ -3,7 +3,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
-#include "OpenGL/Program/Program.h"
+#include "OpenGL/Shader/Shader.h"
 #include "OpenGL/Buffers/VAO/VAO.h"
 #include "OpenGL/Buffers/IBO/IBO.h"
 #include "OpenGL/Buffers/VBO/VBO.h"
@@ -21,6 +21,7 @@ bool g_Keys[1024] = { false };
 
 void checkKeys()
 {
+    static GLfloat distanceChangeValue = 10.0f;
         GLfloat cameraSpeed = 8.0f * (GLfloat) deltaTime;
         if (g_Keys[GLFW_KEY_W])
             System::camera->moveForward(cameraSpeed);
@@ -30,7 +31,10 @@ void checkKeys()
             System::camera->moveLeft(cameraSpeed);
         if (g_Keys[GLFW_KEY_D])
             System::camera->moveRight(cameraSpeed);
-        System::camera->setNeedUpdate(true);
+        if(g_Keys[GLFW_KEY_P])
+            System::lightSource.addDistance(distanceChangeValue);
+        if(g_Keys[GLFW_KEY_M])
+            System::lightSource.subDistance(distanceChangeValue);
 }
 
 void resize(GLFWwindow* window, int width, int height)
@@ -44,6 +48,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         g_Keys[key] = true;
     else if(action == GLFW_RELEASE)
         g_Keys[key] = false;
+    System::camera->setNeedUpdate(true);
 }
 
 void cursor_callback(GLFWwindow *window, double x, double y)
@@ -67,7 +72,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
-    Program program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
+    Shader program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
     program.compile();
     BMPFile bmp("s.bmp");
     if(bmp.load() != FILE_SUCCESSFUL)
@@ -77,8 +82,7 @@ int main()
     Model testModel("testModel", "test.obj");
     double oldTime;
     program.use();
-    GLint lightPos_id = glGetUniformLocation(program.getProgramID(), "lightPos");
-    vec3 lightPos;
+    int counter = 0;
     while(!glfwWindowShouldClose(System::window))
     {
         glfwPollEvents();
@@ -86,16 +90,18 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         checkKeys();
         System::camera->updateCamera(System::mvp);
-        glUniform3f(lightPos_id, System::camera->getPosition()[0], System::camera->getPosition()[1], System::camera->getPosition()[2]);
+        program.setViewMatrix(System::camera->getView());
+        program.setProjectionMatrix(System::mvp.getProjection());
+        System::lightSource.setPosition(System::camera->getPosition());
+        program.setLightSource(System::lightSource);
         testModel.getTransform().identityAllMatrix();
-        //testModel.getTransform().scale({0.01f, 0.01f, 0.01f});
-        testModel.getTransform().translate({0.0f, 0.0f, -48.0f});
-        texture->bind();
-        testModel.draw(program, System::mvp);
-        texture->unbind();
+        //testModel.getTransform().scale({0.1f, 0.1f, 0.1f});
+        testModel.getTransform().translate({0.0f, 0.0f, -50.0f});
+        testModel.draw(program);
         glFlush();
         glfwSwapBuffers(System::window);
         deltaTime = glfwGetTime()-oldTime;
+        counter++;
     }
     glfwTerminate();
     delete System::camera;
