@@ -22,6 +22,8 @@ uniform Material material;
 
 void main()
 {
+    vec3 ambient = lightColor * material.ambient * 0.1f;
+    //DIFFUSE COLOR
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(lightPos - pos);
     float distance = length(lightPos - pos);
@@ -29,7 +31,12 @@ void main()
     if(distance <= lightMaxDistance)
         coeff = max(1.0f - distance/lightMaxDistance, 0.01f);
     float diff = max(-dot(norm, lightDir), 0.0f);
-    vec3 diffuse = diff * ourColor * lightColor * coeff;
-    //color = texture(ourTexture, TexCoord) * vec4(diffuse, 1.0f);
-    color = vec4(diffuse, 1.0f);
+    vec3 diffuse = diff * lightColor;// * material.diffuse;
+    //SPECULAR COLOR
+    vec3 viewDir = normalize(lightPos - pos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = lightColor * (spec * material.specular);
+    color = vec4((ambient + diffuse + specular) * coeff, 1.0f);
+    //color = texture(ourTexture, TexCoord) * vec4((ambient + diffuse + specular), 1.0f);
 }
