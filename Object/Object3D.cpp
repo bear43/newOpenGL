@@ -155,9 +155,10 @@ void Object3D::draw(Shader& shader)
     vao.bindBuffer();
     shader.setModelMatrix(transform.getModelMatrix());
     material.draw(shader);
-    if(!indices.empty())
+    if(totalElements != 0)
     {
-        glDrawElements(GL_TRIANGLES, (GLsizei)indices.size()*3, GL_UNSIGNED_INT, nullptr);
+        //glDrawElements(GL_TRIANGLES, (GLsizei)indices.size()*3, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (GLsizei)totalElements, GL_UNSIGNED_INT, nullptr);
     }
     else
     {
@@ -214,6 +215,17 @@ void Object3D::fillBuffers()
             this->normals,
             this->texCoords
     );
-    this->vbo.fillBuffer(data.data(), data.size()*sizeof(GLfloat), GL_DYNAMIC_DRAW);
+    this->vbo.fillBuffer(data.data(), data.size()*sizeof(GLfloat), GL_STATIC_DRAW);
     this->ibo.fillBuffer(VecToVector::transform3i(this->indices));
+    totalElements = indices.size()*3;
+    points.clear();
+    colors.clear();
+    normals.clear();
+    texCoords.clear();
+    indices.clear();
+    delete points.data();//TODO solve that problem
+    delete colors.data();//TODO leave it unchanged
+    delete normals.data();//TODO or it is fine
+    delete texCoords.data();//TODO to delete data pointers
+    delete indices.data();//TODO because i have no sigsev
 }

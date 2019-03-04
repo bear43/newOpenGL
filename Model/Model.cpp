@@ -40,7 +40,6 @@ void Model::loadMeshes()
 
 void Model::draw(Shader& shader)
 {
-
     for(Object3D *mesh : meshes)
     {
         //TODO Texture!

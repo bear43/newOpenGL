@@ -15,6 +15,7 @@
 #include "OpenGL/Util/VecToVector.h"
 #include "System.h"
 #include "Model/Model.h"
+#include "PNGLoader/lodepng.h"
 
 double deltaTime = 1.0;
 bool g_Keys[1024] = { false };
@@ -74,11 +75,16 @@ int main()
     glEnable(GL_TEXTURE_2D);
     Shader program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
     program.compile();
-    BMPFile bmp("s.bmp");
-    if(bmp.load() != FILE_SUCCESSFUL)
-        throw runtime_error("Cannot read BMP");
-    Texture* texture = new Texture(GL_TEXTURE_2D);
-    texture->init(bmp.getData().data(), bmp.getHeader().Width, bmp.getHeader().Height, GL_RGB, GL_BGR, GL_UNSIGNED_BYTE);
+    //BMPFile bmp("s.bmp");
+    //if(bmp.load() != FILE_SUCCESSFUL)
+    //    throw runtime_error("Cannot read BMP");
+    //Texture* texture = new Texture(GL_TEXTURE_2D);
+    //auto *data = new vector<unsigned char>();
+    //unsigned int width;
+    //unsigned int height;
+    //lodepng::decode(*data, width, height, "test.png");
+    //texture->init((const char*)data->data(), width, height, GL_RGB, GL_RGBA, GL_UNSIGNED_BYTE);
+    //delete data;
     Model testModel("testModel", "test.obj");
     double oldTime;
     program.use();
@@ -97,8 +103,10 @@ int main()
         testModel.getTransform().identityAllMatrix();
         //testModel.getTransform().scale({0.1f, 0.1f, 0.1f});
         testModel.getTransform().translate({0.0f, 0.0f, -50.0f});
+        //texture->bind();
         testModel.draw(program);
-        glFlush();
+        //texture->unbind();
+        //glFlush();
         glfwSwapBuffers(System::window);
         deltaTime = glfwGetTime()-oldTime;
         counter++;

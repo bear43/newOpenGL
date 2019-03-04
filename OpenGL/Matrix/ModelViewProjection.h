@@ -21,7 +21,7 @@ class ModelViewProjection
 private:
     inline static const GLfloat perspective_default_angle = 45.0f;
     inline static const GLfloat perspective_default_near_clip = 0.1f;
-    inline static const GLfloat perspective_default_far_clip = 2000.0f;
+    inline static const GLfloat perspective_default_far_clip = 100.0f;
     int width;
     int height;
     GLfloat perspective_angle = perspective_default_angle;
