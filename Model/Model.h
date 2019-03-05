@@ -6,19 +6,20 @@
 #define UNTITLED2_MODEL_H
 
 #include "../Object/Object3D.h"
-//#include "../OBJLoader/OBJ_Loader.h"
 #include <fmt/core.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include "../OBJLoader/MeshFactory/MeshFacrotyAssimp.h"
 
 class Model
 {
 private:
     static inline GLuint totalCount = 0;
     string name;
-    objl::Loader loader;
     Transform transform;
     vector<Object3D*> meshes;
-    bool usedOBJ = false;//OBJ
 public:
+    Model(const string &name, const vector<Object3D*> &meshes);
     explicit Model(const string &name);
     Model();
 
@@ -26,8 +27,14 @@ public:
 
     //------------------------------------------------------------------------------------------------------------------
     //OBJ
-    Model(const string &name, const string& sourceOBJfile);
-    void loadMeshes();
+    Model(const string &name, const objl::Loader &loader);
+    explicit Model(const objl::Loader &loader);
+    //------------------------------------------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------------------------------------------
+    //Assimp
+    Model(const string &name, aiScene &scene);
+    explicit Model(aiScene &scene);
     //------------------------------------------------------------------------------------------------------------------
 
     void draw(Shader& shader);
@@ -35,6 +42,7 @@ public:
     Transform &getTransform();
 
     void setTransform(const Transform &transform);
+    static GLuint getTotalCount();
 };
 
 

@@ -148,6 +148,20 @@ namespace objl
 
 		// Texture Coordinate Vector
 		Vector2 TextureCoordinate;
+
+		Vertex(const std::vector<float> &pos, const std::vector<float> &normal, const std::vector<float> &tex)
+		{
+			Position.X = pos[0];
+			Position.Y = pos[1];
+			Position.Z = pos[2];
+			Normal.X = normal[0];
+			Normal.Y = normal[1];
+			Normal.Z = normal[2];
+			TextureCoordinate.X = tex[0];
+			TextureCoordinate.Y = tex[1];
+		}
+
+		Vertex() = default;
 	};
 
 	struct Material

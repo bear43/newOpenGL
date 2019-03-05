@@ -16,6 +16,8 @@
 #include "System.h"
 #include "Model/Model.h"
 #include "PNGLoader/lodepng.h"
+#include "Model/ModelFactory/ModelFactoryOBJ/ModelFactoryOBJ.h"
+#include "Model/ModelFactory/ModelFactoryAssimp/ModelFactoryAssimp.h"
 
 double deltaTime = 1.0;
 bool g_Keys[1024] = { false };
@@ -75,17 +77,9 @@ int main()
     glEnable(GL_TEXTURE_2D);
     Shader program("vertexShader_texture_modelviewproj", "fragmentShader_texture");
     program.compile();
-    //BMPFile bmp("s.bmp");
-    //if(bmp.load() != FILE_SUCCESSFUL)
-    //    throw runtime_error("Cannot read BMP");
-    //Texture* texture = new Texture(GL_TEXTURE_2D);
-    //auto *data = new vector<unsigned char>();
-    //unsigned int width;
-    //unsigned int height;
-    //lodepng::decode(*data, width, height, "test.png");
-    //texture->init((const char*)data->data(), width, height, GL_RGB, GL_RGBA, GL_UNSIGNED_BYTE);
-    //delete data;
-    Model testModel("testModel", "test.obj");
+    ModelFactoryOBJ *factory = new ModelFactoryOBJ();
+    Model &&testModel = factory->createModel("testModel", "LibertStatue.obj");
+    delete factory;
     double oldTime;
     program.use();
     int counter = 0;
@@ -101,12 +95,8 @@ int main()
         System::lightSource.setPosition(System::camera->getPosition());
         program.setLightSource(System::lightSource);
         testModel.getTransform().identityAllMatrix();
-        //testModel.getTransform().scale({0.1f, 0.1f, 0.1f});
         testModel.getTransform().translate({0.0f, 0.0f, -50.0f});
-        //texture->bind();
         testModel.draw(program);
-        //texture->unbind();
-        //glFlush();
         glfwSwapBuffers(System::window);
         deltaTime = glfwGetTime()-oldTime;
         counter++;

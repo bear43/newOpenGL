@@ -16,8 +16,8 @@ using namespace std;
 
 namespace System
 {
-    const int WIDTH = 1920;
-    const int HEIGHT = 1080;
+    const int WIDTH = 800;
+    const int HEIGHT = 600;
     int width = WIDTH;
     int height = HEIGHT;
     GLFWwindow *window;
@@ -46,7 +46,7 @@ namespace System
             return false;
         }
         glfwSetKeyCallback(window, key_callback);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPosCallback(window, cursor_callback);
         glfwSetWindowSizeCallback(window, resize_callback);
         glfwSetCursorPos(window, WIDTH/2.0f, HEIGHT/2.0f);
